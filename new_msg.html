@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="{{ static_url("new_msg.js") }}" type="text/javascript"></script>
+</head>
+<body>
+    <h1>Run Log</h1>
+    <form action="/new" method="post" id="messagefrom"">
+        <input type="text" name="user" id="user"/>
+        <input type="button" value="submit" onclick="newMsg()" />
+    </form>
+
+    <div id="message">
+    </div>
+
+
+</body>
+</html>
