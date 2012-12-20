@@ -5,6 +5,7 @@
 from datetime import date, timedelta
 
 class ModelDate(object):
+    cache = None
     def __init__(self, indate=None):
         self._date = indate if indate else date.today()
 
@@ -41,7 +42,13 @@ class ModelDateManager(object):
             md = ModelDate(tmpdate)
             self._cache[str(tmpdate)] = md
             return md
+
+    def getToday(self):
+        md = ModelDate()
+        self.add(md)
+        return self._cache[str(md.date)]
         
+
 
 
 if __name__ == "__main__":
@@ -58,4 +65,6 @@ if __name__ == "__main__":
     print new_md.date
     for i in new_md.users:
         print i
+
+    print mdm.getToday().date
     
