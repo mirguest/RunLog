@@ -12,15 +12,21 @@ class PerDayMemberManager(object):
         self._db.close()
 
     def save(self, day, userlist):
-        self._db[day] = '#'.join(userlist)
+        self._db[day] = '#'.join(map(str, userlist))
+
+    def add(self, day, user):
+        ul = self.get(day)
+        ul.add(user)
+        self.save(day, ul)
 
     def get(self, day):
         if self._db.has_key(day):
-            return self._db[day].split('#')
-        return []
+            return set(self._db[day].split('#'))
+        return set()
 
 if __name__ == "__main__":
     pdmm = PerDayMemberManager()
-    pdmm.save("2012/12/20", ['a', 'b'])
+    pdmm.save("2012/12/20", ('a', 'b'))
+    pdmm.add("2012/12/20", 'lintao')
     print pdmm.get("2012/12/20")
     print pdmm.get("2012/12/21")
