@@ -43,14 +43,31 @@ class PerDayMemberManager(object):
         return True
 
     def daily_runlog_get_userids_by_day(self, day):
-        ids= self._db.query("select id from daily_run_log "
+        ids= self._db.query("select runner_id from daily_run_log "
                             "where day=%s", day)
-        return [id['id'] for id in ids]
+        return [id['runner_id'] for id in ids]
+
+    def daily_runlog_get_users_by_day(self, day):
+        ids = self.daily_runlog_get_userids_by_day(day)
+        return self.user_get_by_ids(ids)
 
     def daily_runlog_get_days_by_userid(self, id):
         days = self._db.query("select day from daily_run_log "
                               "where runner_id=%s", id)
         return [day['day'] for day in days]
+
+    # Some interface
+    def get(self, data):
+        users = self.daily_runlog_get_users_by_day(data)
+        return [(user['id'],user['name']) for user in users if user]
+    def add(self, date, userid):
+        return self.daily_runlog_add(userid, date)
+
+    def getusers(self):
+        return self._db.query('select * from runners')
+
+    def getlog(self, userid):
+        return self.daily_runlog_get_days_by_userid(userid)
 
 if __name__ == "__main__":
     mgr = PerDayMemberManager()
@@ -60,5 +77,14 @@ if __name__ == "__main__":
     print mgr.user_get_by_ids([1])
     print mgr.daily_runlog_add(1, "2012/12/23")
     print mgr.daily_runlog_get_userids_by_day('2012/12/23')
+    print mgr.daily_runlog_get_users_by_day('2012/12/23')
     print mgr.daily_runlog_get_days_by_userid(1)
 
+    print "2012/12/23"
+    print mgr.get('2012/12/23')
+    print "2012/12/22"
+    print mgr.add('2012/12/22', 1)
+    print mgr.get('2012/12/22')
+    print mgr.add('2012/12/23', 1)
+    print mgr.getusers()
+    print mgr.getlog(1)

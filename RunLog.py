@@ -9,8 +9,41 @@ import tornado.web
 
 from PerDayMember import PerDayMemberManager
 
+class Runner(tornado.web.RequestHandler):
+    def initialize(self, dbname='runlog'):
+        self.pdmm = PerDayMemberManager(dbname)
+
+    @tornado.web.removeslash
+    def get(self, userid=None):
+        if userid is None:
+            self.redirect("/register")
+            return
+        result = self.pdmm.user_get_by_id(int(userid))
+        if not result:
+            return
+        self.render("runner.html",
+                    userinfo=result.items(),
+                    runlog=self.pdmm.getlog(int(userid)))
+
+class RunnerRegister(tornado.web.RequestHandler):
+    def initialize(self, dbname='runlog'):
+        self.pdmm = PerDayMemberManager(dbname)
+
+    @tornado.web.removeslash
+    def get(self):
+        self.render('register.html')
+
+    def post(self):
+        user = self.get_argument('user')
+        email = self.get_argument('email')
+        if self.pdmm.user_add(user=user, email=email):
+            # if the email does not exist, add the user:
+            self.write("Register Success")
+        else:
+            self.write("The email has been registered.")
+
 class RunLogEveryDay(tornado.web.RequestHandler):
-    def initialize(self, dbname='cache'):
+    def initialize(self, dbname='runlog'):
         self.pdmm = PerDayMemberManager(dbname)
 
     def get(self, year, month, day):
@@ -22,16 +55,11 @@ class RunLogEveryDay(tornado.web.RequestHandler):
             return
         strdate = d.strftime("%Y/%m/%d")
 
-        line = "<ul>"
-        for user in self.pdmm.get(strdate):
-            line += "<li>%s</li>"%user
-        line += "</ul>"
+        self.render("runlog.html", 
+                    userlist=self.pdmm.get(strdate),
+                    strdate=strdate,
+                    wholeusers=self.pdmm.getusers())
 
-        line += '<form action="/%s" method="post">' % strdate
-        line += '<input type="text" name="user" />'
-        line += '<input type="submit" value="Add" />'
-        line += '</form>'
-        self.write(line)
 
     def post(self, year, month, day):
         year, month, day = int(year), int(month), int(day)
@@ -44,5 +72,5 @@ class RunLogEveryDay(tornado.web.RequestHandler):
         user = self.get_argument("user", None)
         if user:
             self.pdmm.add(strdate, user)
-        self.get(year, month, day)
+        self.redirect("/%s"%strdate)
         pass

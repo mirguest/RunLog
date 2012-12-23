@@ -53,6 +53,9 @@ application = tornado.web.Application([
     (r"/new", MessageNewHandler),
     (r"/read", MessageReadHandler),
     (r"/(\d+)/(\d+)/(\d+)", RunLogEveryDay),
+    (r"/user/(\d+)", Runner),
+    (r"/user/?", Runner),
+    (r"/register", RunnerRegister),
 ], **settings)
 
 if __name__ == "__main__":

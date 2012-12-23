@@ -16,9 +16,10 @@ drop table if exists daily_run_log;
 create table daily_run_log (
     id int not null auto_increment primary key,
     runner_id int not null references runners(id),
-    day date not null,
-    key (day)
+    day date not null
 );
+
+create index date_index on daily_run_log (day);
 
 drop table if exists runners;
 create table runners (

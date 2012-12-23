@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Run Log</h1>
+    <h1>Who runs in this day?</h1>
+    <ul>
+        {% for id, user in userlist %}
+        <li><a href="/user/{{id}}">{{user}}</a></li>
+        {% end %}
+    </ul>
+    <h1>Have you run in this day?</h1>
+        <form action="/{{strdate}}" method="post">
+        <select multiple name="user">'
+            {% for user in wholeusers %}
+            <option value="{{user['id']}}">{{user['name']}}</option>
+            {% end %}
+        </select>
+        <br />
+        <input type="submit" value="I Have run!" />
+        </form>
+        
+    <h1>Register?</h1>
+    <a href="/register">Register</a>
+</body>
+</html>

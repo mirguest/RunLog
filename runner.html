@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Runner Info</h1>
+    <h1>Contact ME</h1>
+        <dl>
+            {% for k,v in userinfo %}
+            <dt>{{k}}</dt><dd>{{v}}</dd>
+            {% end %}
+        </dl>
+    <h1>My History</h1>
+        <ul>
+            {% for day in runlog %}
+            {% set strday = day.strftime("%Y/%m/%d") %}
+            <li><a href="/{{strday}}">{{strday}}</a></li>
+            {% end %}
+        </ul>
+</body>
+</html>
