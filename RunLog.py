@@ -3,6 +3,7 @@
 # author: lintao
 
 import datetime
+import calendar
 
 import tornado.ioloop
 import tornado.web
@@ -45,6 +46,7 @@ class RunnerRegister(tornado.web.RequestHandler):
 class RunLogEveryDay(tornado.web.RequestHandler):
     def initialize(self, dbname='runlog'):
         self.pdmm = PerDayMemberManager(dbname)
+        self.calendar = calendar.HTMLCalendar()
 
     def get(self, year, month, day):
         year, month, day = int(year), int(month), int(day)
@@ -55,10 +57,13 @@ class RunLogEveryDay(tornado.web.RequestHandler):
             return
         strdate = d.strftime("%Y/%m/%d")
 
+        this_month = self.calendar.formatmonth(d.year, d.month)
+
         self.render("runlog.html", 
                     userlist=self.pdmm.get(strdate),
                     strdate=strdate,
-                    wholeusers=self.pdmm.getusers())
+                    wholeusers=self.pdmm.getusers(),
+                    this_month=this_month)
 
 
     def post(self, year, month, day):
@@ -66,7 +71,7 @@ class RunLogEveryDay(tornado.web.RequestHandler):
         try:
             d = datetime.date(year, month, day)
         except:
-            self.write("This day is not exist!")
+            self.write("This day does not exist!")
             return
         strdate = d.strftime("%Y/%m/%d")
         user = self.get_argument("user", None)
