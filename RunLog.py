@@ -3,12 +3,12 @@
 # author: lintao
 
 import datetime
-import calendar
 
 import tornado.ioloop
 import tornado.web
 
 from PerDayMember import PerDayMemberManager
+from MyCalendar import MyCalendar
 
 class Runner(tornado.web.RequestHandler):
     def initialize(self, dbname='runlog'):
@@ -46,7 +46,7 @@ class RunnerRegister(tornado.web.RequestHandler):
 class RunLogEveryDay(tornado.web.RequestHandler):
     def initialize(self, dbname='runlog'):
         self.pdmm = PerDayMemberManager(dbname)
-        self.calendar = calendar.HTMLCalendar()
+        self.calendar = MyCalendar()
 
     def get(self, year, month, day):
         year, month, day = int(year), int(month), int(day)
