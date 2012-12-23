@@ -5,6 +5,7 @@
 import os.path
 import uuid
 import time
+import datetime
 
 import tornado.ioloop
 import tornado.web
@@ -17,7 +18,10 @@ gMDM = ModelDateManager()
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
-        self.render("index.html")
+
+        d = datetime.date.today()
+        strdate = d.strftime("%Y/%m/%d")
+        self.redirect("/%s"%strdate)
 
 class MessageNewHandler(tornado.web.RequestHandler):
 
@@ -50,13 +54,13 @@ settings = dict(
 )
 
 application = tornado.web.Application([
-    (r"/", MainHandler),
     (r"/new", MessageNewHandler),
     (r"/read", MessageReadHandler),
     (r"/(\d+)/(\d+)/(\d+)", RunLogEveryDay),
     (r"/user/(\d+)", Runner),
     (r"/user/?", Runner),
     (r"/register", RunnerRegister),
+    (r"/.*", MainHandler),
 ], **settings)
 
 if __name__ == "__main__":
