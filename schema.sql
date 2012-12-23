@@ -16,7 +16,8 @@ drop table if exists daily_run_log;
 create table daily_run_log (
     id int not null auto_increment primary key,
     runner_id int not null references runners(id),
-    day date not null
+    day date not null,
+    key (day)
 );
 
 drop table if exists runners;
