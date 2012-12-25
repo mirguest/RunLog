@@ -79,3 +79,18 @@ class RunLogEveryDay(tornado.web.RequestHandler):
             self.pdmm.add(strdate, user)
         self.redirect("/%s"%strdate)
         pass
+
+class RunLogEveryMonth(tornado.web.RequestHandler):
+    def initialize(self, dbname='runlog'):
+        self.pdmm = PerDayMemberManager(dbname)
+        self.calendar = MyCalendar()
+    def get(self, year, month):
+        year = int(year)
+        month = int(month)
+        if 1 <= month <= 12:
+            this_month = self.calendar.formatmonth(year, month)
+            self.render("runlog_month.html",
+                        userlist=self.pdmm.get_month(year, month),
+                        this_month=this_month)
+        else:
+            self.write("This month does not exist!")

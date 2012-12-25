@@ -51,6 +51,15 @@ class PerDayMemberManager(object):
         ids = self.daily_runlog_get_userids_by_day(day)
         return self.user_get_by_ids(ids)
 
+    def daily_runlog_get_users_by_month(self, year, month):
+        ids = self._db.query("select runner_id from daily_run_log "
+                              "where year(day)=%s "
+                              "and month(day)=%s "
+                              "group by runner_id",
+                              year, month)
+        return self.user_get_by_ids(id['runner_id'] for id in ids)
+
+
     def daily_runlog_get_days_by_userid(self, id):
         days = self._db.query("select day from daily_run_log "
                               "where runner_id=%s", id)
@@ -68,6 +77,10 @@ class PerDayMemberManager(object):
 
     def getlog(self, userid):
         return self.daily_runlog_get_days_by_userid(userid)
+
+    def get_month(self, year, month):
+        users = self.daily_runlog_get_users_by_month(year, month)
+        return [(user['id'],user['name']) for user in users if user]
 
 if __name__ == "__main__":
     mgr = PerDayMemberManager()
@@ -88,3 +101,4 @@ if __name__ == "__main__":
     print mgr.add('2012/12/23', 1)
     print mgr.getusers()
     print mgr.getlog(1)
+    print mgr.get_month(2012, 12)
