@@ -59,6 +59,13 @@ class PerDayMemberManager(object):
                               year, month)
         return self.user_get_by_ids(id['runner_id'] for id in ids)
 
+    def daily_runlog_get_users_by_year(self, year):
+        ids = self._db.query("select runner_id from daily_run_log "
+                              "where year(day)=%s "
+                              "group by runner_id",
+                              year)
+        return self.user_get_by_ids(id['runner_id'] for id in ids)
+
 
     def daily_runlog_get_days_by_userid(self, id):
         days = self._db.query("select day from daily_run_log "
@@ -82,6 +89,10 @@ class PerDayMemberManager(object):
         users = self.daily_runlog_get_users_by_month(year, month)
         return [(user['id'],user['name']) for user in users if user]
 
+    def get_year(self, year):
+        users = self.daily_runlog_get_users_by_year(year)
+        return [(user['id'],user['name']) for user in users if user]
+
 if __name__ == "__main__":
     mgr = PerDayMemberManager()
     print mgr.user_add(user="Lin Tao", email="lintao51@gmail.com")
@@ -102,3 +113,4 @@ if __name__ == "__main__":
     print mgr.getusers()
     print mgr.getlog(1)
     print mgr.get_month(2012, 12)
+    print mgr.get_year(2012)

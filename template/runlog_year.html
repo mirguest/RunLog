@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <h1>Run Log</h1>
+    <h1>Who runs in this Year?</h1>
+    <ul>
+        {% for id, user in userlist %}
+        <li><a href="/user/{{id}}">{{user}}</a></li>
+        {% end %}
+    </ul>
+
+    <h1>Register?</h1>
+    <a href="/register">Register</a>
+    <h1>Calendar</h1>
+    {%raw this_year%}
+</body>
+</html>

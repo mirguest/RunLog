@@ -58,6 +58,7 @@ application = tornado.web.Application([
     (r"/read", MessageReadHandler),
     (r"/(\d+)/(\d+)/(\d+)", RunLogEveryDay),
     (r"/(\d+)/(\d+)", RunLogEveryMonth),
+    (r"/(\d+)", RunLogEveryYear),
     (r"/user/(\d+)", Runner),
     (r"/user/?", Runner),
     (r"/register", RunnerRegister),
